@@ -8,30 +8,52 @@
 </head>
 <body>
   <div id="app">
+
     <header>
-      <span>active users: {{ activeUsers.length }}</span>
+      <h1>QUIZZER LIVE</h1>
     </header>
+    
     <main role="main">
+
+      <aside class="active-users">
+        active users: {{ activeUsers.length }}
+      </aside>
+
       <section v-if="waiting">
-        <div v-if="introCountdown">
-          quiz starting in {{ introCountdown }}
+
+        <!-- TODO: set aria-live -->
+        <div v-if="introCountdown" class="intro-countdown-label">
+          quiz starting in
+          <div class="intro-countdown">
+            {{ introCountdown }}
+          </div>
         </div>
-        <div v-else>
+
+        <div v-if="!activeUsers || activeUsers.length === 1" class="waiting-indicator">
           waiting for more players
         </div>
+
       </section>
+
       <section v-else>
-        <div>{{ questionTimer }}</div>
-        <div>{{ question }}</div>
+        
+        <div class="question-timer">{{ questionTimer }}</div>
+
+        <!-- TODO: set aria-live -->
+        <div class="question">{{ question }}</div>
+        
         <select v-model="optionSelected" :disabled="optionSelected">
           <option v-for="option in options">
             {{ option }}
           </option>
         </select>
+      
       </section>
-      <section v-if="waiting && (amountCorrect || amountWrong)">
+      
+      <section v-if="waiting && (amountCorrect || amountWrong)" class="results">
         results: {{ amountCorrect }} / {{ amountCorrect + amountWrong }}
       </section>
+    
     </main>
   </div>
 
@@ -39,10 +61,17 @@
   <script>
     const host = location.origin.replace(/^http/, 'ws')
     const ws = new WebSocket(host)
-
-    new Vue({
+  </script>
+  <script>
+    const app = new Vue({
       el: '#app',
       data: {
+        // local
+        optionSelected: null,
+        amountCorrect: 0,
+        amountWrong: 0,
+
+        // from socket
         question: null,
         options: null,
         answer: null,
@@ -53,10 +82,6 @@
         userID: null,
         introCountdown: null,
         introCountdownActive: null,
-
-        optionSelected: null,
-        amountCorrect: 0,
-        amountWrong: 0,
       },
       created () {
         ws.onmessage = (e) => {

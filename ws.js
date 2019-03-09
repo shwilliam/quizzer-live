@@ -5,7 +5,7 @@ const SocketServer = require('ws').Server
 const path = require('path')
 
 const PORT = process.env.PORT || 3000
-const INDEX = path.join(__dirname, 'index.html')
+const INDEX = path.join(__dirname, '/src/index.html')
 
 const server = express()
   .use((req, res) => res.sendFile(INDEX) )
@@ -102,6 +102,7 @@ wss.on('connection', (ws) => {
 })
 
 setInterval(() => {
+  // TODO: refactor with switches and states
   if (APP_STATE._state.waiting && APP_STATE._state.activeUsers.length >= 2) {
     APP_STATE.triggerIntroCountdown()
   } else if (APP_STATE._state.activeUsers.length < 2) {
