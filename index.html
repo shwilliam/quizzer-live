@@ -97,7 +97,12 @@
       },
       watch: {
         answer(newAnswer, oldAnswer) {
-          if (newAnswer === oldAnswer || !oldAnswer) return
+          if (newAnswer === oldAnswer) return
+          else if (!oldAnswer) {
+            this.amountCorrect = 0
+            this.amountWrong = 0
+            return
+          }
 
           if (this.optionSelected === oldAnswer) {
             this.amountCorrect += 1

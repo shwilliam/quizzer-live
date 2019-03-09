@@ -82,6 +82,7 @@ let APP_STATE = {
   },
   finishQuiz() {
     this._state.activeQuestion = null
+    this._state.questionTimer = null
     this._state.waiting = true
   }
 }
@@ -103,10 +104,12 @@ wss.on('connection', (ws) => {
 setInterval(() => {
   if (APP_STATE._state.waiting && APP_STATE._state.activeUsers.length >= 2) {
     APP_STATE.triggerIntroCountdown()
-  }
+  } else if (APP_STATE._state.activeUsers.length < 2) {
+    APP_STATE.clearIntroCountdown()
+  } 
 
   if (APP_STATE._state.introCountdownActive && APP_STATE._state.introCountdown === null) {
-    APP_STATE.startIntroCountdown(5)
+    APP_STATE.startIntroCountdown(10)
   } else if (APP_STATE._state.introCountdownActive && APP_STATE._state.introCountdown > 0) {
     APP_STATE.decrementIntroCountdown()
   } else if (APP_STATE._state.introCountdown !== null)  {
@@ -121,7 +124,7 @@ setInterval(() => {
   } else if (APP_STATE._state.questionTimer !== null)  {
     if (APP_STATE._state.activeQuestionIndex + 1 < QUESTIONS.length) {
       APP_STATE.nextQuestion()
-      APP_STATE.startQuestionTimer(10)
+      APP_STATE.startQuestionTimer(5)
     } else {
       APP_STATE.finishQuiz()
     }
