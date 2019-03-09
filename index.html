@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>QUIZZER</title>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <span>active users: {{ activeUsers.length }}</span>
+    </header>
+    <main role="main">
+      <section v-if="waiting">
+        <div v-if="introCountdown">
+          quiz starting in {{ introCountdown }}
+        </div>
+        <div v-else>
+          waiting for more players
+        </div>
+      </section>
+      <section v-else>
+        <div>{{ questionTimer }}</div>
+        <div>{{ question }}</div>
+        <select v-model="optionSelected" :disabled="optionSelected">
+          <option v-for="option in options">
+            {{ option }}
+          </option>
+        </select>
+      </section>
+      <section v-if="waiting && (amountCorrect || amountWrong)">
+        results: {{ amountCorrect }} / {{ amountCorrect + amountWrong }}
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script>
+    const host = location.origin.replace(/^http/, 'ws')
+    const ws = new WebSocket(host)
+
+    new Vue({
+      el: '#app',
+      data: {
+        question: null,
+        options: null,
+        answer: null,
+        activeQuestionIndex: null,
+        questionTimer: null,
+        waiting: true,
+        activeUsers: [],
+        userID: null,
+        introCountdown: null,
+        introCountdownActive: null,
+
+        optionSelected: null,
+        amountCorrect: 0,
+        amountWrong: 0,
+      },
+      created () {
+        ws.onmessage = (e) => {
+          const {
+            activeQuestion,
+            activeQuestionIndex,
+            questionTimer,
+            waiting,
+            activeUsers,
+            userID,
+            introCountdown,
+            introCountdownActive,
+          }  = JSON.parse(e.data)
+
+          if (activeQuestion) {
+            const {
+              question,
+              options,
+              answer,
+            } = activeQuestion
+            this.question = question
+            this.options = options
+            this.answer = answer
+          } else {
+            this.question = null
+            this.options = null
+            this.answer = null
+          }
+
+          this.activeQuestionIndex = activeQuestionIndex
+          this.questionTimer = questionTimer
+          this.waiting = waiting
+          this.activeUsers = activeUsers
+          this.userID = userID
+          this.introCountdown = introCountdown
+          this.introCountdownActive = introCountdownActive
+        }
+      },
+      watch: {
+        answer(newAnswer, oldAnswer) {
+          if (newAnswer === oldAnswer || !oldAnswer) return
+
+          if (this.optionSelected === oldAnswer) {
+            this.amountCorrect += 1
+          } else {
+            this.amountWrong += 1
+          }
+
+          this.optionSelected = null
+        },
+      },
+    })
+  </script>
+</body>
+</html>
