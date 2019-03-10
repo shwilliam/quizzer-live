@@ -16,19 +16,29 @@ const wss = new SocketServer({ server })
 
 const QUESTIONS = [
   {
-    question: 'Who?',
-    options: ['me', 'you', 'someone else'],
-    answer: 'you',
+    question: 'HTML is what type of language?',
+    options: ['scripting', 'markup', 'programming'],
+    answer: 'markup',
   },
   {
-    question: 'When?',
-    options: ['now', 'later', 'earlier'],
-    answer: 'earlier',
+    question: 'When was HTML first proposed?',
+    options: ['1990', '1980', '2000'],
+    answer: '1990',
   },
   {
-    question: 'What?',
-    options: ['that', 'this', 'something else'],
-    answer: 'this',
+    question: 'Apart from the <b> tag, what other HTML tag makes text bold by default?',
+    options: ['fat', 'strong', 'big'],
+    answer: 'strong',
+  },
+  {
+    question: 'Who is known as the father of World Wide Web?',
+    options: ['robert cailliau', 'tim berners-lee', 'tim thompson'],
+    answer: 'tim berners-lee',
+  },
+  {
+    question: 'Which HTML tag results in the biggest heading by default?',
+    options: ['h1', 'h6', 'h9'],
+    answer: 'h1',
   },
 ]
 
