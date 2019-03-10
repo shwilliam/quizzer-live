@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 3000
 const INDEX = path.join(__dirname, '/src/index.html')
 
 const server = express()
+  .use(express.static(__dirname + '/src/static/'))
   .use((req, res) => res.sendFile(INDEX) )
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
