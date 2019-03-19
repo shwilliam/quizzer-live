@@ -7,6 +7,7 @@
     <title>QUIZZER</title>
     <link rel="stylesheet" type="text/css" href="reset.css">
     <link rel="stylesheet" type="text/css" href="global.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
   </head>
   <body>
     <div id="app">
@@ -21,7 +22,7 @@
           {{ activeUsers.length }} players
         </aside>
 
-        <section v-if="waiting">
+        <section v-if="waiting" class="waiting-container">
 
           <section v-if="waiting && (amountCorrect || amountWrong)" class="results">
             you answered {{ amountCorrect }} out of {{ amountCorrect + amountWrong }} correctly
@@ -41,7 +42,7 @@
 
         </section>
         
-        <section v-else>
+        <section v-else class="question-container">
           
           <div class="question-timer">{{ questionTimer }}</div>
 
@@ -58,8 +59,6 @@
       
       </main>
     </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
   <script>
     const host = location.origin.replace(/^http/, 'ws')
     const ws = new WebSocket(host)
